@@ -227,59 +227,59 @@ void SH1106::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
   #if defined SH1106_128_64
 
     // Init sequence for 128x64 OLED module
-    ssd1306_command(SH1106_DISPLAYOFF);                    // 0xAE
-    ssd1306_command(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5
-    ssd1306_command(0xF0);                                 // the suggested ratio 0xF0
-    ssd1306_command(SH1106_SETMULTIPLEX);                  // 0xA8
-    ssd1306_command(0x3F);								   //
-    ssd1306_command(SH1106_OUTPUT_FOLLOWS_RAM);            // 0xA4
-    ssd1306_command(SH1106_SETDISPLAYOFFSET);              // 0xD3
-    ssd1306_command(0x0);                                  // no offset
-    ssd1306_command(SH1106_SETSTARTLINE | 0x0);            // line #0
-    ssd1306_command(SH1106_CHARGEPUMP);                    // 0x8D
+    sh1106_command(SH1106_DISPLAYOFF);                    // 0xAE
+    sh1106_command(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5
+    sh1106_command(0xF0);                                 // the suggested ratio 0xF0
+    sh1106_command(SH1106_SETMULTIPLEX);                  // 0xA8
+    sh1106_command(0x3F);								  //
+    sh1106_command(SH1106_OUTPUT_FOLLOWS_RAM);            // 0xA4
+    sh1106_command(SH1106_SETDISPLAYOFFSET);              // 0xD3
+    sh1106_command(0x0);                                  // no offset
+    sh1106_command(SH1106_SETSTARTLINE | 0x0);            // line #0
+    sh1106_command(SH1106_CHARGEPUMP);                    // 0x8D
+    if (vccstate == SH1106_EXTERNALVCC)					  //
+      { sh1106_command(0x10); }						   	  //
+    else												  //
+      { sh1106_command(0x14); }						   	  //
+    sh1106_command(SH1106_MEMORYMODE);                    // 0x20
+	sh1106_command(PAGE);                                 // 0x2 Paged
+    sh1106_command(SH1106_SET_PAGE_ADDRESS); 			  // start at page address 0
+//    sh1106_command(SH1106_SEGREMAP | 0x1);			  //
+    sh1106_command(SH1106_COMSCANDEC);					  //
+    sh1106_command(SH1106_SETLOWCOLUMN);				  //
+    sh1106_command(SH1106_SETHIGHCOLUMN);				   //
+    sh1106_command(SH1106_SETCOMPINS);                    // 0xDA
+    sh1106_command(0x12);								   //
+    sh1106_command(SH1106_SETCONTRAST);                   // 0x81
     if (vccstate == SH1106_EXTERNALVCC)					   //
-      { ssd1306_command(0x10); }						   //
-    else												   //
-      { ssd1306_command(0x14); }						   //
-    ssd1306_command(SH1106_MEMORYMODE);                    // 0x20
-	ssd1306_command(PAGE);                                 // 0x2 Paged XXXXXXXXXXX
-    ssd1306_command(SH1106_SET_PAGE_ADDRESS); 			   // start at page address 0 XXXXXXXXX
-//    ssd1306_command(SH1106_SEGREMAP | 0x1);				   // ?????????????
-    ssd1306_command(SH1106_COMSCANDEC);					   //
-    ssd1306_command(SH1106_SETLOWCOLUMN);				   //
-    ssd1306_command(SH1106_SETHIGHCOLUMN);				   //
-    ssd1306_command(SH1106_SETCOMPINS);                    // 0xDA
-    ssd1306_command(0x12);								   //
-    ssd1306_command(SH1106_SETCONTRAST);                   // 0x81
-    if (vccstate == SH1106_EXTERNALVCC)					   //
-      { ssd1306_command(0x9F); }						   //
+      { sh1106_command(0x9F); }						   //
     else					   							   //
-      { ssd1306_command(0xCF); }					       //
-    ssd1306_command(SH1106_SET_SEGMENT_REMAP);             // 0xA1
-    ssd1306_command(SH1106_SETPRECHARGE);                  // 0xd9
+      { sh1106_command(0xCF); }					       //
+    sh1106_command(SH1106_SET_SEGMENT_REMAP);             // 0xA1
+    sh1106_command(SH1106_SETPRECHARGE);                  // 0xd9
     if (vccstate == SH1106_EXTERNALVCC)					   //
-      { ssd1306_command(0x22); }						   //
+      { sh1106_command(0x22); }						   //
     else												   //
-      { ssd1306_command(0xF1); }						   //
-    ssd1306_command(SH1106_SETVCOMDETECT);                 // 0xDB
-    ssd1306_command(0x20);								   // 0.77xVcc
-    ssd1306_command(SH1106_DISPLAYALLON_RESUME);           // 0xA4
-    ssd1306_command(SH1106_NORMALDISPLAY);                 // 0xA6
+      { sh1106_command(0xF1); }						   //
+    sh1106_command(SH1106_SETVCOMDETECT);                 // 0xDB
+    sh1106_command(0x20);								   // 0.77xVcc
+    sh1106_command(SH1106_DISPLAYALLON_RESUME);           // 0xA4
+    sh1106_command(SH1106_NORMALDISPLAY);                 // 0xA6
   #endif
 
-  ssd1306_command(SH1106_DISPLAYON);//--turn on oled panel
+  sh1106_command(SH1106_DISPLAYON);//--turn on oled panel
 }
 
 
 void SH1106::invertDisplay(uint8_t i) {
   if (i) {
-    ssd1306_command(SH1106_INVERTDISPLAY);
+    sh1106_command(SH1106_INVERTDISPLAY);
   } else {
-    ssd1306_command(SH1106_NORMALDISPLAY);
+    sh1106_command(SH1106_NORMALDISPLAY);
   }
 }
 
-void SH1106::ssd1306_command(uint8_t c) {
+void SH1106::sh1106_command(uint8_t c) {
   if (sid != -1)
   {
     // SPI
@@ -309,14 +309,14 @@ void SH1106::ssd1306_command(uint8_t c) {
 // Hint, the display is 16 rows tall. To scroll the whole display, run:
 // display.scrollright(0x00, 0x0F)
 void SH1106::startscrollright(uint8_t start, uint8_t stop){
-  ssd1306_command(SH1106_RIGHT_HORIZONTAL_SCROLL);
-  ssd1306_command(0X00);
-  ssd1306_command(start);
-  ssd1306_command(0X00);
-  ssd1306_command(stop);
-  ssd1306_command(0X00);
-  ssd1306_command(0XFF);
-  ssd1306_command(SH1106_ACTIVATE_SCROLL);
+  sh1106_command(SH1106_RIGHT_HORIZONTAL_SCROLL);
+  sh1106_command(0X00);
+  sh1106_command(start);
+  sh1106_command(0X00);
+  sh1106_command(stop);
+  sh1106_command(0X00);
+  sh1106_command(0XFF);
+  sh1106_command(SH1106_ACTIVATE_SCROLL);
 }
 
 // startscrollleft - DOES NOT SEEM TO WORK WITH SH1106
@@ -324,14 +324,14 @@ void SH1106::startscrollright(uint8_t start, uint8_t stop){
 // Hint, the display is 16 rows tall. To scroll the whole display, run:
 // display.scrollright(0x00, 0x0F)
 void SH1106::startscrollleft(uint8_t start, uint8_t stop){
-  ssd1306_command(SH1106_LEFT_HORIZONTAL_SCROLL);
-  ssd1306_command(0X00);
-  ssd1306_command(start);
-  ssd1306_command(0X00);
-  ssd1306_command(stop);
-  ssd1306_command(0X00);
-  ssd1306_command(0XFF);
-  ssd1306_command(SH1106_ACTIVATE_SCROLL);
+  sh1106_command(SH1106_LEFT_HORIZONTAL_SCROLL);
+  sh1106_command(0X00);
+  sh1106_command(start);
+  sh1106_command(0X00);
+  sh1106_command(stop);
+  sh1106_command(0X00);
+  sh1106_command(0XFF);
+  sh1106_command(SH1106_ACTIVATE_SCROLL);
 }
 
 // startscrolldiagright - DOES NOT SEEM TO WORK WITH SH1106
@@ -339,16 +339,16 @@ void SH1106::startscrollleft(uint8_t start, uint8_t stop){
 // Hint, the display is 16 rows tall. To scroll the whole display, run:
 // display.scrollright(0x00, 0x0F)
 void SH1106::startscrolldiagright(uint8_t start, uint8_t stop){
-  ssd1306_command(SH1106_SET_VERTICAL_SCROLL_AREA);
-  ssd1306_command(0X00);
-  ssd1306_command(SH1106_LCDHEIGHT);
-  ssd1306_command(SH1106_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL);
-  ssd1306_command(0X00);
-  ssd1306_command(start);
-  ssd1306_command(0X00);
-  ssd1306_command(stop);
-  ssd1306_command(0X01);
-  ssd1306_command(SH1106_ACTIVATE_SCROLL);
+  sh1106_command(SH1106_SET_VERTICAL_SCROLL_AREA);
+  sh1106_command(0X00);
+  sh1106_command(SH1106_LCDHEIGHT);
+  sh1106_command(SH1106_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL);
+  sh1106_command(0X00);
+  sh1106_command(start);
+  sh1106_command(0X00);
+  sh1106_command(stop);
+  sh1106_command(0X01);
+  sh1106_command(SH1106_ACTIVATE_SCROLL);
 }
 
 // startscrolldiagleft - DOES NOT SEEM TO WORK WITH SH1106
@@ -356,20 +356,20 @@ void SH1106::startscrolldiagright(uint8_t start, uint8_t stop){
 // Hint, the display is 16 rows tall. To scroll the whole display, run:
 // display.scrollright(0x00, 0x0F)
 void SH1106::startscrolldiagleft(uint8_t start, uint8_t stop){
-  ssd1306_command(SH1106_SET_VERTICAL_SCROLL_AREA);
-  ssd1306_command(0X00);
-  ssd1306_command(SH1106_LCDHEIGHT);
-  ssd1306_command(SH1106_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL);
-  ssd1306_command(0X00);
-  ssd1306_command(start);
-  ssd1306_command(0X00);
-  ssd1306_command(stop);
-  ssd1306_command(0X01);
-  ssd1306_command(SH1106_ACTIVATE_SCROLL);
+  sh1106_command(SH1106_SET_VERTICAL_SCROLL_AREA);
+  sh1106_command(0X00);
+  sh1106_command(SH1106_LCDHEIGHT);
+  sh1106_command(SH1106_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL);
+  sh1106_command(0X00);
+  sh1106_command(start);
+  sh1106_command(0X00);
+  sh1106_command(stop);
+  sh1106_command(0X01);
+  sh1106_command(SH1106_ACTIVATE_SCROLL);
 }
 
 void SH1106::stopscroll(void){
-  ssd1306_command(SH1106_DEACTIVATE_SCROLL);
+  sh1106_command(SH1106_DEACTIVATE_SCROLL);
 }
 
 // Dim the display
@@ -389,19 +389,19 @@ void SH1106::dim(boolean dim) {
   }
   // the range of contrast to too small to be really useful
   // it is useful to dim the display
-  ssd1306_command(SH1106_SETCONTRAST);
-  ssd1306_command(contrast);
+  sh1106_command(SH1106_SETCONTRAST);
+  sh1106_command(contrast);
 }
 
 void SH1106::dimit(uint8_t contrast) {
 
   // the range of contrast to too small to be really useful
   // it is useful to dim the display
-  ssd1306_command(SH1106_SETCONTRAST);
-  ssd1306_command(contrast);
+  sh1106_command(SH1106_SETCONTRAST);
+  sh1106_command(contrast);
 }
 
-void SH1106::ssd1306_data(uint8_t c) {
+void SH1106::sh1106_data(uint8_t c) {
   if (sid != -1)
   {
     // SPI
@@ -434,9 +434,9 @@ void SH1106::display(void) {
 
     for (int page = 0; page < SH1106_MAX_PAGE_COUNT; page++)
     {
-		ssd1306_command(SH1106_SET_PAGE_ADDRESS + page);
-        ssd1306_command(0x02); // low column start address
-        ssd1306_command(0x10); // high column start address
+		sh1106_command(SH1106_SET_PAGE_ADDRESS + page);
+        sh1106_command(0x02); // low column start address
+        sh1106_command(0x10); // high column start address
         for (int pixel = 0; pixel < SH1106_LCDWIDTH; pixel++)
         {
 			if (sid != -1)

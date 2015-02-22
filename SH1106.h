@@ -48,8 +48,6 @@ All text above, and the splash screen must be included in any redistribution
 #define INVERSE 2
 
 #define SH1106_I2C_ADDRESS   0x3C	// 011110+SA0+RW - 0x3C or 0x3D
-// Address for 128x32 is 0x3C
-// Address for 128x64 is 0x3D (default) or 0x3C (if SA0 is grounded)
 
 /*=========================================================================
     SH1106 Displays
@@ -60,17 +58,15 @@ All text above, and the splash screen must be included in any redistribution
 
     SH1106_128_64  128x64 pixel display
     -----------------------------------------------------------------------*/
-   #define SH1106_128_64
+#define SH1106_128_64
 /*=========================================================================*/
-
-#if defined SH1106_128_64
-  #error "Only one SH1106 display can be specified at once in SH1106.h"
-#endif
 
 #if defined SH1106_128_64
   #define SH1106_LCDWIDTH                  128
   #define SH1106_LCDHEIGHT                 64
 #endif
+
+#define SH1106_MAX_PAGE_COUNT  8
 
 #define SH1106_SETCONTRAST 0x81
 #define SH1106_DISPLAYALLON_RESUME 0xA4
@@ -79,6 +75,8 @@ All text above, and the splash screen must be included in any redistribution
 #define SH1106_INVERTDISPLAY 0xA7
 #define SH1106_DISPLAYOFF 0xAE
 #define SH1106_DISPLAYON 0xAF
+#define SH1106_OUTPUT_FOLLOWS_RAM 0xA4
+#define SH1106_SET_SEGMENT_REMAP	0xA1 // 0 to 127
 
 #define SH1106_SETDISPLAYOFFSET 0xD3
 #define SH1106_SETCOMPINS 0xDA
@@ -98,6 +96,8 @@ All text above, and the splash screen must be included in any redistribution
 #define SH1106_MEMORYMODE 0x20
 #define SH1106_COLUMNADDR 0x21
 #define SH1106_PAGEADDR   0x22
+#define SH1106_SET_PAGE_ADDRESS	0xB0 /* sets the page address from 0 to 7 */
+
 
 #define SH1106_COMSCANINC 0xC0
 #define SH1106_COMSCANDEC 0xC8
@@ -140,6 +140,8 @@ class SH1106 : public Adafruit_GFX {
   void stopscroll(void);
 
   void dim(boolean dim);
+  void dimit(uint8_t contrast);
+
 
   void drawPixel(int16_t x, int16_t y, uint16_t color);
 
