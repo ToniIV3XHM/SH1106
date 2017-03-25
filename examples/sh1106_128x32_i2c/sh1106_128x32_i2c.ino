@@ -1,11 +1,11 @@
 /*********************************************************************
-This is an example for our Monochrome OLEDs based on SH1106 drivers
+This is an example for our Monochrome OLEDs based on SSD1306 drivers
 
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/63_98
 
-This example is for a 128x64 size display using SPI to communicate
-4 or 5 pins are required to interface
+This example is for a 128x32 size display using I2C to communicate
+3 pins are required to interface (2 I2C and one reset)
 
 Adafruit invests time and resources providing this open source code, 
 please support Adafruit and open-source hardware by purchasing 
@@ -19,27 +19,16 @@ All text above, and the splash screen must be included in any redistribution
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <SH1106.h>
+#include <Adafruit_SSD1306.h>
 
-// If using software SPI (the default case):
-#define OLED_MOSI   9
-#define OLED_CLK   10
-#define OLED_DC    11
-#define OLED_CS    12
-#define OLED_RESET 13
-Adafruit_SH1106 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
-
-/* Uncomment this block to use hardware SPI
-#define OLED_DC     6
-#define OLED_CS     7
-#define OLED_RESET  8
-Adafruit_SH1106 display(OLED_DC, OLED_RESET, OLED_CS);
-*/
+#define OLED_RESET 4
+Adafruit_SSD1306 display(OLED_RESET);
 
 #define NUMFLAKES 10
 #define XPOS 0
 #define YPOS 1
 #define DELTAY 2
+
 
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
@@ -61,15 +50,15 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
   B01110000, B01110000,
   B00000000, B00110000 };
 
-#if (SH1106_LCDHEIGHT != 64)
-#error("Height incorrect, please fix Adafruit_SH1106.h!");
+#if (SSD1306_LCDHEIGHT != 32)
+#error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
 void setup()   {                
   Serial.begin(9600);
 
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
-  display.begin(SH1106_SWITCHCAPVCC);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
   // init done
   
   // Show image buffer on the display hardware.
@@ -164,6 +153,7 @@ void setup()   {
   // miniature bitmap display
   display.drawBitmap(30, 16,  logo16_glcd_bmp, 16, 16, 1);
   display.display();
+  delay(1);
 
   // invert the display
   display.invertDisplay(true);
@@ -235,12 +225,14 @@ void testdrawchar(void) {
       display.println();
   }    
   display.display();
+  delay(1);
 }
 
 void testdrawcircle(void) {
   for (int16_t i=0; i<display.height(); i+=2) {
     display.drawCircle(display.width()/2, display.height()/2, i, WHITE);
     display.display();
+    delay(1);
   }
 }
 
@@ -250,6 +242,7 @@ void testfillrect(void) {
     // alternate colors
     display.fillRect(i, i, display.width()-i*2, display.height()-i*2, color%2);
     display.display();
+    delay(1);
     color++;
   }
 }
@@ -260,6 +253,7 @@ void testdrawtriangle(void) {
                      display.width()/2-i, display.height()/2+i,
                      display.width()/2+i, display.height()/2+i, WHITE);
     display.display();
+    delay(1);
   }
 }
 
@@ -272,6 +266,7 @@ void testfilltriangle(void) {
     if (color == WHITE) color = BLACK;
     else color = WHITE;
     display.display();
+    delay(1);
   }
 }
 
@@ -279,6 +274,7 @@ void testdrawroundrect(void) {
   for (int16_t i=0; i<display.height()/2-2; i+=2) {
     display.drawRoundRect(i, i, display.width()-2*i, display.height()-2*i, display.height()/4, WHITE);
     display.display();
+    delay(1);
   }
 }
 
@@ -289,6 +285,7 @@ void testfillroundrect(void) {
     if (color == WHITE) color = BLACK;
     else color = WHITE;
     display.display();
+    delay(1);
   }
 }
    
@@ -296,6 +293,7 @@ void testdrawrect(void) {
   for (int16_t i=0; i<display.height()/2; i+=2) {
     display.drawRect(i, i, display.width()-2*i, display.height()-2*i, WHITE);
     display.display();
+    delay(1);
   }
 }
 
@@ -303,10 +301,12 @@ void testdrawline() {
   for (int16_t i=0; i<display.width(); i+=4) {
     display.drawLine(0, 0, i, display.height()-1, WHITE);
     display.display();
+    delay(1);
   }
   for (int16_t i=0; i<display.height(); i+=4) {
     display.drawLine(0, 0, display.width()-1, i, WHITE);
     display.display();
+    delay(1);
   }
   delay(250);
   
@@ -314,10 +314,12 @@ void testdrawline() {
   for (int16_t i=0; i<display.width(); i+=4) {
     display.drawLine(0, display.height()-1, i, 0, WHITE);
     display.display();
+    delay(1);
   }
   for (int16_t i=display.height()-1; i>=0; i-=4) {
     display.drawLine(0, display.height()-1, display.width()-1, i, WHITE);
     display.display();
+    delay(1);
   }
   delay(250);
   
@@ -325,10 +327,12 @@ void testdrawline() {
   for (int16_t i=display.width()-1; i>=0; i-=4) {
     display.drawLine(display.width()-1, display.height()-1, i, 0, WHITE);
     display.display();
+    delay(1);
   }
   for (int16_t i=display.height()-1; i>=0; i-=4) {
     display.drawLine(display.width()-1, display.height()-1, 0, i, WHITE);
     display.display();
+    delay(1);
   }
   delay(250);
 
@@ -336,10 +340,12 @@ void testdrawline() {
   for (int16_t i=0; i<display.height(); i+=4) {
     display.drawLine(display.width()-1, 0, 0, i, WHITE);
     display.display();
+    delay(1);
   }
   for (int16_t i=0; i<display.width(); i+=4) {
     display.drawLine(display.width()-1, 0, i, display.height()-1, WHITE); 
     display.display();
+    delay(1);
   }
   delay(250);
 }
@@ -351,6 +357,7 @@ void testscrolltext(void) {
   display.clearDisplay();
   display.println("scroll");
   display.display();
+  delay(1);
  
   display.startscrollright(0x00, 0x0F);
   delay(2000);

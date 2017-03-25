@@ -1,10 +1,10 @@
 /*********************************************************************
-This is an example for our Monochrome OLEDs based on SH1106 drivers
+This is an example for our Monochrome OLEDs based on SSD1306 drivers
 
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/category/63_98
 
-This example is for a 128x64 size display using SPI to communicate
+This example is for a 128x32 size display using SPI to communicate
 4 or 5 pins are required to interface
 
 Adafruit invests time and resources providing this open source code, 
@@ -19,7 +19,7 @@ All text above, and the splash screen must be included in any redistribution
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <SH1106.h>
+#include <Adafruit_SSD1306.h>
 
 // If using software SPI (the default case):
 #define OLED_MOSI   9
@@ -27,13 +27,13 @@ All text above, and the splash screen must be included in any redistribution
 #define OLED_DC    11
 #define OLED_CS    12
 #define OLED_RESET 13
-Adafruit_SH1106 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 /* Uncomment this block to use hardware SPI
 #define OLED_DC     6
 #define OLED_CS     7
 #define OLED_RESET  8
-Adafruit_SH1106 display(OLED_DC, OLED_RESET, OLED_CS);
+Adafruit_SSD1306 display(OLED_DC, OLED_RESET, OLED_CS);
 */
 
 #define NUMFLAKES 10
@@ -61,15 +61,15 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
   B01110000, B01110000,
   B00000000, B00110000 };
 
-#if (SH1106_LCDHEIGHT != 64)
-#error("Height incorrect, please fix Adafruit_SH1106.h!");
+#if (SSD1306_LCDHEIGHT != 32)
+#error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
 void setup()   {                
   Serial.begin(9600);
-
+  
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
-  display.begin(SH1106_SWITCHCAPVCC);
+  display.begin(SSD1306_SWITCHCAPVCC);
   // init done
   
   // Show image buffer on the display hardware.
