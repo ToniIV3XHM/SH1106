@@ -1,4 +1,4 @@
-# Adafruit_SH1106
+# SH1106
 <!-- START COMPATIBILITY TABLE -->
 
 ## Compatibility
