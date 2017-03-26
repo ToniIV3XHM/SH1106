@@ -234,10 +234,12 @@ void Adafruit_SH1106::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
     // turn on VCC (9V?)
   }
 
+  // Init sequence
+  sh1106_command(SH1106_DISPLAYOFF);                    // 0xAE
+  sh1106_command(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5
+
   #if defined SH1106_128_64
     // Init sequence for 128x64 OLED module
-    sh1106_command(SH1106_DISPLAYOFF);                    // 0xAE XXXXXXXXXXXXXXXX
-    sh1106_command(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5 XXXXXXXXXXXXXXX
     sh1106_command(0xF0);                                 // the suggested ratio 0xF0 XXXXXXXX
     sh1106_command(SH1106_SETMULTIPLEX);                  // 0xA8 XXXXXXXXX
     sh1106_command(0x3F);								   // XXXXXXXXXXX
@@ -278,9 +280,6 @@ void Adafruit_SH1106::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
   #endif
 
 /*
-  // Init sequence
-  sh1106_command(SH1106_DISPLAYOFF);                    // 0xAE
-  sh1106_command(SH1106_SETDISPLAYCLOCKDIV);            // 0xD5
   sh1106_command(0x80);                                  // the suggested ratio 0x80
 
   sh1106_command(SH1106_SETMULTIPLEX);                  // 0xA8
